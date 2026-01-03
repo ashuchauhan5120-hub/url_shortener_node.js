@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>shorten url</title>
+  </head>
+
+  <body>
+    <div>
+      <h1>Your Shorten URL</h1>
+      <input
+        type="text"
+        name="shortenUrl"
+        id="shortenUrl"
+        value="<%= shortenlink %>"
+        readonly
+      />
+      <button data-link="<%= shortenlink %>" onclick="copyText(this)">
+        Copy url
+      </button>
+      <p>Clicks: <%= click %></p>
+      <button
+        data-shortcode="<%= shortcode %>"
+        data-id="<%= id %>"
+        onclick="removeUrl(this)"
+      >
+        Delete
+      </button>
+      <a href="/">Shorten another url</a>
+    </div>
+    <script>
+      function copyText(btn) {
+        const shortenlink = btn.dataset.link;
+        navigator.clipboard.writeText(shortenlink);
+        alert("link copied successfully");
+        return;
+      }
+
+      async function removeUrl(btn) {
+        const id = btn.dataset.id;
+        const shortcode = btn.dataset.shortcode;
+
+        const res = await fetch(`/result/${shortcode}/delete/${id}`, {
+          method: "DELETE",
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          window.location.href = "/";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -10,7 +10,7 @@ async function getShortenUrl(req, res) {
 
   try {
     if (!longUrl) {
-      return res.status(404).send("Enter a url");
+      return res.status(400).send("Enter a url");
     }
 
     let shortcode;
@@ -19,9 +19,11 @@ async function getShortenUrl(req, res) {
     do {
       shortcode = generateShortCode();
       exists = await getUrlByShortcode(shortcode);
-      console.log("exists: ", exists);
+   
     } while (exists);
-    await creatShortenUrl(shortcode, longUrl);
+
+    const user_id = req.session.userId
+    await creatShortenUrl(shortcode, longUrl, user_id);
     res.redirect(`/result/${shortcode}`);
   } catch (error) {
     console.error(error);
